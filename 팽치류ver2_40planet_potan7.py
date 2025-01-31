@@ -64,6 +64,7 @@ def apply_transforms(parent_transforms, child_transforms):
 # 트랜스폼 데이터를 포맷팅하는 함수
 def format_transformation(transforms, default_interpolation_value=None):
     transforms_str = ",".join(f"{round(t, 4)}f" for t in transforms)
+    transforms_str = transforms_str.replace(".0f", "f")  # .0f 제거
     if default_interpolation_value:
         return f"{{start_interpolation: 0, interpolation_duration: {default_interpolation_value}, transformation:[{transforms_str}]}}"
     else:
@@ -435,7 +436,6 @@ def process_bdengine_file():
                     transformation_str == previous_transformations.get(selector_key)):
                 # 중복이니 transformation 지우기
                 is_transformation = False
-                line = line.replace(transformation_str, "")
                 line = line.replace(transformation_str, "")
                 line = re.sub(r"start_interpolation: \d+, interpolation_duration: \d+", "", line)
                 line = line.replace("data merge entity", "item replace entity")
