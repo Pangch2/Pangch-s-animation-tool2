@@ -116,6 +116,8 @@ else:
                     sec = int(st[1:])
                 elif st[0] == 'i':
                     inter = int(st[1:])
+                else:
+                        inter = default_interpolation_value_input
             frame_info[f] = (sec, inter)
 
 
