@@ -7,7 +7,10 @@ from pathlib import Path
 
 # 설정 파일 경로
 settingpath = 'setting.txt'
-
+    # 'result' 폴더가 없다면 생성
+result_folder = 'result'
+if not os.path.exists(result_folder):
+        os.makedirs(result_folder)
 # 파일이 없으면 기본 설정 내용으로 생성
 if not os.path.exists(settingpath):
     print(f"{settingpath} 파일이 존재하지 않습니다. 기본 설정 파일을 생성합니다.")
@@ -321,10 +324,7 @@ def process_bdengine_file():
     bdengine_files.append(largest_file)  # 그 파일을 마지막에도 추가
 
     
-    # 'result' 폴더가 없다면 생성
-    result_folder = 'result'
-    if not os.path.exists(result_folder):
-        os.makedirs(result_folder)
+
     # 'result' 폴더 내의 파일 삭제
     for filename in os.listdir(result_folder):
         file_path = os.path.join(result_folder, filename)
