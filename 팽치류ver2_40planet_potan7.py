@@ -5,7 +5,28 @@ import json
 import re
 from pathlib import Path
 
+# 설정 파일 경로
+settingpath = 'setting.txt'
 
+# 파일이 없으면 기본 설정 내용으로 생성
+if not os.path.exists(settingpath):
+    print(f"{settingpath} 파일이 존재하지 않습니다. 기본 설정 파일을 생성합니다.")
+    
+    default_settings = """생성모드 :1
+임시플레이어(선택) :
+스코어 이름(선택) :
+기본 보간값(선택) :
+기본 스코어증가값(기본값 1) :
+시작 스코어 값(선택) :1
+네임스페이스 :
+score저장이름(기본값frame) :
+frame저장위치(선택) :
+score저장위치(선택) :"""
+    
+    # 기본 설정 파일 생성
+    with open(settingpath, 'w', encoding='utf-8') as file:
+        file.write(default_settings)
+        
 config = {}
 # 파일을 읽고 설정을 딕셔너리에 저장
 with open('setting.txt', 'r', encoding='utf-8') as file:
@@ -47,6 +68,8 @@ with open('setting.txt', 'r', encoding='utf-8') as file:
         scoreboard_name = config.get('스코어 이름(선택)', None)  # 설정4의 값을 scoreboard_name에 할당
         default_interpolation_value_input = config.get('기본 보간값(선택)', None)
         default_s_value = config.get('기본 스코어증가값(기본값 1)', "1")
+        if not default_s_value or default_s_value.strip() == '':
+            default_s_value = "1"
         scoreboard_start_value_input = config.get('시작 스코어 값(선택)', "0")
         if scoreboard_start_value_input.isdigit():
             scoreboard_start_value = int(scoreboard_start_value_input)
