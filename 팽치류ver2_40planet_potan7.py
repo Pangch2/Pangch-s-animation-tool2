@@ -17,7 +17,51 @@ with open('setting.txt', 'r', encoding='utf-8') as file:
         if ':' in line:
             key, value = line.split(':', 1)
             config[key] = value
+    # 설정 파일에서 설정값 읽어오기
+    def load_config(file_path):
+        config = {}
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                # 설정 1~5까지 읽어서 딕셔너리에 저장
+                for line in file:
+                    line = line.strip()  # 줄 끝의 개행 문자 제거
+                    if ':' in line:
+                        key, value = line.split(':', 1)
+                        config[key.strip()] = value.strip()  # 키와 값의 앞뒤 공백 제거
+        except FileNotFoundError:
+            print(f"{file_path} 파일을 찾을 수 없습니다.")
+            return None  # 파일을 찾을 수 없으면 None 반환
+        return config
+    
+    
+    # 설정 값 불러오기
+    config = load_config('setting.txt')  # setting.txt 파일에서 설정값을 읽어옴
+    
+    # 설정1
+    if config:
+        global default_s_value
+        scoreboard_start_value = 0  # 기본값을 0으로 설정
+        mode_input = config.get('생성모드', None)
+        mode = int(mode_input) if mode_input else 0  # 문자열을 정수형으로 변환, 값이 없으면 0
+        temporary_player_name = config.get('임시플레이어(선택)', None)  # 설정3의 값을 temporary_player_name에 할당
+        scoreboard_name = config.get('스코어 이름(선택)', None)  # 설정4의 값을 scoreboard_name에 할당
+        default_interpolation_value_input = config.get('기본 보간값(선택)', None)
+        default_s_value = config.get('기본 스코어증가값(기본값 1)', "1")
+        scoreboard_start_value_input = config.get('시작 스코어 값(선택)', "0")
+        if scoreboard_start_value_input.isdigit():
+            scoreboard_start_value = int(scoreboard_start_value_input)
+            current_score = scoreboard_start_value
+        namespace = config.get('네임스페이스', None)
+        frame_file_savename = config.get('score저장이름(기본값frame)', None)
+        save_dnlcl = config.get('frame저장위치(선택)', None)
+        save_dnlcl_ifsocre = config.get('score저장위치(선택)', None)
 
+
+        # 출력
+        print(f"설정 값 불러오기 성공: {config}")
+    else:
+        print("설정 값을 불러오는 데 실패했습니다.")
+        
 # 'frame.txt' 파일에서 프레임 정보 읽어오기
 frame_file_text = 'frame.txt'
 frame_info = {}
@@ -33,10 +77,10 @@ else:
 
             if line == '':
                 continue
-            
+
             # 파일 분리해서 숫자 추출
             value = line.split(' ')
-            inter = 0
+            inter = default_interpolation_value_input
             sec = 0
             f = -1
             for st in value:
@@ -207,8 +251,8 @@ def extract_number_from_filename(filename):
 
 # 파일 이름에서 i와 s 값 추출하는 함수
 def extract_values_from_filename(filename):
-    i_value = None
-    s_value = 0
+    i_value = default_interpolation_value_input
+    s_value = default_s_value
     f_value = -1
     tttal = 0
 
@@ -252,49 +296,7 @@ def process_bdengine_file():
     bdengine_files.remove(largest_file)  # 그 파일을 리스트에서 제거
     bdengine_files.insert(0, largest_file)  # 그 파일을 첫 번째로 처리하도록 리스트의 맨 앞에 추가
     bdengine_files.append(largest_file)  # 그 파일을 마지막에도 추가
-    # 설정 파일에서 설정값 읽어오기
-    def load_config(file_path):
-        config = {}
-        try:
-            with open(file_path, 'r', encoding='utf-8') as file:
-                # 설정 1~5까지 읽어서 딕셔너리에 저장
-                for line in file:
-                    line = line.strip()  # 줄 끝의 개행 문자 제거
-                    if ':' in line:
-                        key, value = line.split(':', 1)
-                        config[key.strip()] = value.strip()  # 키와 값의 앞뒤 공백 제거
-        except FileNotFoundError:
-            print(f"{file_path} 파일을 찾을 수 없습니다.")
-            return None  # 파일을 찾을 수 없으면 None 반환
-        return config
-    
-    
-    # 설정 값 불러오기
-    config = load_config('setting.txt')  # setting.txt 파일에서 설정값을 읽어옴
-    
-    # 설정1
-    if config:
-        scoreboard_start_value = 0  # 기본값을 0으로 설정
-        mode_input = config.get('생성모드', None)
-        mode = int(mode_input) if mode_input else 0  # 문자열을 정수형으로 변환, 값이 없으면 0
-        temporary_player_name = config.get('임시플레이어(선택)', None)  # 설정3의 값을 temporary_player_name에 할당
-        scoreboard_name = config.get('스코어 이름(선택)', None)  # 설정4의 값을 scoreboard_name에 할당
-        default_interpolation_value_input = config.get('기본 보간값(선택)', None)
-        default_s_value = config.get('기본 스코어증가값(기본값 1)', "1")
-        scoreboard_start_value_input = config.get('시작 스코어 값(선택)', "0")
-        if scoreboard_start_value_input.isdigit():
-            scoreboard_start_value = int(scoreboard_start_value_input)
-            current_score = scoreboard_start_value
-        namespace = config.get('네임스페이스', None)
-        frame_file_savename = config.get('score저장이름(기본값frame)', None)
-        save_dnlcl = config.get('frame저장위치(선택)', None)
-        save_dnlcl_ifsocre = config.get('score저장위치(선택)', None)
 
-
-        # 출력
-        print(f"설정 값 불러오기 성공: {config}")
-    else:
-        print("설정 값을 불러오는 데 실패했습니다.")
     
     # 'result' 폴더가 없다면 생성
     result_folder = 'result'
@@ -349,6 +351,7 @@ def process_bdengine_file():
 
     # 첫 번째 파일에 대한 처리
     for bdengine_file in bdengine_files:
+        global default_s_value
         i_value, s_value, tttal = extract_values_from_filename(bdengine_file)
 
         # i 값이 있으면 기본 보간 값 대체
@@ -365,11 +368,6 @@ def process_bdengine_file():
                 current_score = scoreboard_start_value - 1  # 빈 문자열일 경우 기본값 사용
  
 
-
-
-        # 현재 파일에 대해 바로 적용할 시작값 설정
-        current_start_value = current_score if scoreboard_name else None
-
         with open(bdengine_file, 'rb') as f:
             decoded_data = base64.b64decode(f.read())
         decompressed_data = gzip.decompress(decoded_data)
@@ -383,7 +381,7 @@ def process_bdengine_file():
         results = []
 
         for item in data:
-            temp = handle_top_level_data(item, mode, default_interpolation_value, temporary_player_name, scoreboard_name, current_start_value)
+            temp = handle_top_level_data(item, mode, default_interpolation_value, temporary_player_name, scoreboard_name, scoreboard_start_value = int(scoreboard_start_value_input))
             results.extend(temp)
 
 
@@ -502,17 +500,14 @@ def process_bdengine_file():
             default_interpolation_value = default_interpolation_value_input
 
         default_s_value = 1 if default_s_value == '' else int(default_s_value)
-        current_score += s_value if s_value else int(default_s_value)  # s가 없으면 1 증가
+        current_score += int(s_value) if int(s_value) else int(default_s_value)  # s가 없으면 1 증가
 
         if s_value == 0:
-            score_interpolation[extracted_number] = current_score - tttal - int(default_s_value)
+            score_interpolation[extracted_number] = current_score - int(tttal) - int(default_s_value)
         else:
-            score_interpolation[extracted_number] = current_score - tttal
+            score_interpolation[extracted_number] = current_score - int(tttal)
 
-        
 
-        # 현재 파일에 대해 바로 적용할 시작값 설정
-        current_start_value = current_score if scoreboard_name else None
 
         with open(bdengine_file, 'rb') as f:
             decoded_data = base64.b64decode(f.read())
@@ -527,7 +522,7 @@ def process_bdengine_file():
         results = []
 
         for item in data:
-            temp = handle_top_level_data(item, mode, default_interpolation_value, temporary_player_name, scoreboard_name, current_start_value)
+            temp = handle_top_level_data(item, mode, default_interpolation_value, temporary_player_name, scoreboard_name, scoreboard_start_value = int(scoreboard_start_value_input))
             results.extend(temp)
 
         current_tags = set()
@@ -644,7 +639,7 @@ def process_bdengine_file():
         if s_value == 0:
             score_interpolation[extracted_number] = score_interpolation_list[-2][1] + int(default_s_value)
         else:
-            score_interpolation[extracted_number] = score_interpolation_list[-2][1] + s_value
+            score_interpolation[extracted_number] = score_interpolation_list[-2][1] + int(s_value)
 
 
     # 저장 경로 결정
