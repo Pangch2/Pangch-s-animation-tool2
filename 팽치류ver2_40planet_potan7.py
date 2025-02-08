@@ -520,17 +520,19 @@ def process_bdengine_file():
 
         # i 값이 있으면 기본 보간 값 대체
         if i_value is not None:
+            print(f,inter,default_interpolation_value_input)
+            
             default_interpolation_value = f"{i_value}"  # i값으로 대체
         else:
             default_interpolation_value = default_interpolation_value_input
-
+       
+        if s_value == 0:
+            score_interpolation[extracted_number] = current_score# - int(tttal) - int(default_s_value)
+        else:
+            score_interpolation[extracted_number] = current_score# - int(tttal)
+            
         default_s_value = 1 if default_s_value == '' else int(default_s_value)
         current_score += int(s_value) if int(s_value) else int(default_s_value)  # s가 없으면 1 증가
-
-        if s_value == 0:
-            score_interpolation[extracted_number] = current_score - int(tttal) - int(default_s_value)
-        else:
-            score_interpolation[extracted_number] = current_score - int(tttal)
 
 
 
