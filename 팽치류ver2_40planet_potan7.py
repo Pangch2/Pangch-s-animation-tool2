@@ -135,10 +135,10 @@ def apply_transforms(parent_transforms, child_transforms):
 
 # 트랜스폼 데이터를 포맷팅하는 함수
 def format_transformation(transforms, default_interpolation_value=None):
-    transforms_str = ",".join(f"{round(t, 9)}f" for t in transforms)
+    transforms_str = ",".join(f"{round(t, 4)}f" for t in transforms)
     transforms_str = transforms_str.replace(".0f", "f")  # .0f 제거
     if default_interpolation_value:
-        return f"{{start_interpolation: 0, interpolation_duration: {default_interpolation_value}, transformation:[{transforms_str}]}}"
+        return f"{{interpolation_duration: {default_interpolation_value}, transformation:[{transforms_str}]}}"
     else:
         return f"{{transformation:[{transforms_str}]}}"
 
@@ -520,7 +520,7 @@ def process_bdengine_file():
 
         # i 값이 있으면 기본 보간 값 대체
         if i_value is not None:
-            print(f,inter,default_interpolation_value_input)
+
             
             default_interpolation_value = f"{i_value}"  # i값으로 대체
         else:
